@@ -28,6 +28,8 @@ final class BrevoEmailMessage
 
     public ?array $headers = null;
 
+    public ?array $tags = null;
+
     public ?array $params = null;
 
     public function from($name, $email = null): BrevoEmailMessage
@@ -149,6 +151,13 @@ final class BrevoEmailMessage
         return $this;
     }
 
+    public function tags(array $tags): BrevoEmailMessage
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
     public function params(array $params): BrevoEmailMessage
     {
         $this->params = $params;
@@ -199,6 +208,10 @@ final class BrevoEmailMessage
 
         if (filled($this->attachment)) {
             $data['attachment'] = $this->attachment;
+        }
+
+        if (filled($this->tags)) {
+            $data['tags'] = $this->tags;
         }
 
         return $data;
