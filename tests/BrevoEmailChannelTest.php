@@ -9,10 +9,18 @@ use YieldStudio\LaravelBrevoNotifier\BrevoService;
 use YieldStudio\LaravelBrevoNotifier\Tests\User;
 
 it('send notification via BrevoEmailChannel should call BrevoService sendEmail method', function () {
-    $mock = $this->mock(BrevoService::class)->shouldReceive('sendEmail')->once();
+    $httpResponse = [
+        'messageId' => '<201906041124.44340027797@smtp-relay.mailin.fr>',
+    ];
+
+    $mock = $this->mock(BrevoService::class)
+        ->shouldReceive('sendEmail')
+        ->once()
+        ->andReturn($httpResponse);
+
     $channel = new BrevoEmailChannel($mock->getMock());
 
-    $channel->send(new User, new class extends Notification
+    $response = $channel->send(new User, new class extends Notification
     {
         public function via()
         {
@@ -24,4 +32,6 @@ it('send notification via BrevoEmailChannel should call BrevoService sendEmail m
             return new BrevoEmailMessage;
         }
     });
+
+    expect($response)->toEqual($httpResponse);
 });
